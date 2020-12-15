@@ -2,8 +2,8 @@ KERNELDIR=/lib/modules/`uname -r`/build
 
 
 #Change the names here to your file name
-MODULES = helloWorld.ko 
-obj-m += helloWorld.o 
+MODULES = driver_module.ko 
+obj-m += driver_module.o 
 
 all:
 	make -C $(KERNELDIR) M=$(PWD) modules
