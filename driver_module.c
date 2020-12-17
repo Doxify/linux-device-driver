@@ -29,7 +29,7 @@ MODULE_DESCRIPTION("Simple Linux char driver for CSC 415");  ///< The descriptio
 MODULE_VERSION("0.0.1");            ///< A version number to inform users
 
 static int    majorNumber;                     ///< Stores the device number -- determined automatically
-static char   message[256] = { NULL };         ///< Memory for the string that is passed from userspace
+static char   message[256] = { 0 };            ///< Memory for the string that is passed from userspace
 static short  bufferSize;                      ///< Used to remember the size of the string stored
 static int    numOfOpens = 0;                  ///< Counts the number of times the device is opened
 static struct class*  cscdevcharClass  = NULL; ///< The device-driver class struct pointer
