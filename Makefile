@@ -1,7 +1,5 @@
 KERNELDIR=/lib/modules/`uname -r`/build
 
-
-#Change the names here to your file name
 MODULES = driver_module.ko 
 obj-m += driver_module.o 
 
