@@ -19,9 +19,15 @@
 #include <linux/kernel.h>           // Contains types, macros, functions for the kernel
 #include <linux/fs.h>               // Header for the Linux file system support
 #include <linux/uaccess.h>          // Required for the copy to user function
+#include <linux/ioctl.h>            // Required for IOCTL functions
 
 #define  DEVICE_NAME "cscdevchar"   /// Device will appear as /dev/cscdevchar
 #define  CLASS_NAME  "cscdev"       /// Device class name (character device driver)
+
+// Defining IOCTL
+#define  WR_DATA _IOW('a', 'a', int32_t*)
+#define  RD_DATA _IOR('a', 'a', int32_t*)
+int32_t  value = 0;
 
 MODULE_LICENSE("GPL");              ///< The license type -- this affects available functionality
 MODULE_AUTHOR("Andrei Georgescu");  ///< The author -- visible when you use modinfo
@@ -40,12 +46,13 @@ static int     dev_open(struct inode *, struct file *);
 static int     dev_release(struct inode *, struct file *);
 static ssize_t dev_read(struct file *, char *, size_t, loff_t *);
 static ssize_t dev_write(struct file *, const char *, size_t, loff_t *);
+static long    etx_ioctl(struct file *, unsigned int cmd, unsigned long arg); // IOCTL prototype
 
 /**
  * Device drivers are represented as a file structure in the kernel.
  * The file_operations structure is responsible for listing which functions are associated with
  * the device driver. It is common for char device drivers to implement open, read, write, and
- * release functions. In addition to this, this skeleton device driver also implements _.
+ * release functions. In addition to this, this skeleton device driver also implements ioctl.
  *
  * NOTE: This uses a C99 syntax structure.
  */ 
@@ -53,8 +60,24 @@ static struct file_operations file_ops = {
     .open = dev_open,
     .read = dev_read,
     .write = dev_write,
+    .unlocked_ioctl = etx_ioctl,
     .release = dev_release,
 };
+
+static long etx_ioctl(struct file *file, unsigned int cmd, unsigned long arg) {
+    switch(cmd) {
+        case WR_DATA: {         // When we write data, we copy FROM the user space
+            copy_from_user(&value, (int32_t*) arg, sizeof(value));
+            printk(KERN_INFO "WR_DATA: Value = %d\n", value);
+            break;
+        }
+        case RD_DATA: {         // When we read data, we copy TO the user space
+            copy_to_user((int32_t*) arg, &value, sizeof(value));
+            break;
+        }
+    }
+    return 0;
+}
 
 /** 
  * This is where the device driver kernel module is initialized.
