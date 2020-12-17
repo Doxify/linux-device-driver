@@ -23,7 +23,7 @@
 #define RD_DATA _IOR('a', 'a', int32_t*)
 
 #define BUFFER_LENGTH 256               ///< The buffer length (crude but fine)
-static char receive[BUFFER_LENGTH];     ///< The receive buffer from the LKM
+// static char receive[BUFFER_LENGTH];     ///< The receive buffer from the LKM
 
 int main(){
    int ret, fd;
@@ -37,13 +37,6 @@ int main(){
       perror("Failed to open the device...");
       return errno;
    }
-
-   // // Prompting the user for input.
-   // printf("Enter the data to send to the driver...\n");
-   // scanf("%d", &num);
-
-   // // Writing the input to the driver.
-   // ioctl(fd, WR_DATA, (int32_t*) &num);
 
    // Prompting the user for input.
    printf("Enter a short string to send to the kernel module...\n");
@@ -62,30 +55,6 @@ int main(){
    // Closing the driver.
    printf("Closing the driver...\n");
    close(fd);
-
-   // // Prompting the user for input.
-   // printf("Type in a short string to send to the kernel module:\n");
-   // scanf("%[^\n]%*c", stringToSend); // Read in a string (with spaces)
-   // printf("Writing message to the device [%s].\n", stringToSend);
-   // ret = write(fd, stringToSend, strlen(stringToSend)); // Send the string to the LKM
-   // if (ret < 0){
-   //    perror("Failed to write the message to the device.");
-   //    return errno;
-   // }
-
-   // printf("Press ENTER to read back from the device...\n");
-   // getchar();
-
-   // // Reading response from the device linux kernel module.
-   // printf("Reading from the device...\n");
-   // ret = read(fd, receive, BUFFER_LENGTH);
-   // if (ret < 0){
-   //    perror("Failed to read the message from the device.");
-   //    return errno;
-   // }
-
-   // printf("The received message is: [%s]\n", receive);
-   // printf("End of the program\n");
 
    return 0;
 }
