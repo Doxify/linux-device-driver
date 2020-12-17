@@ -191,7 +191,8 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
  */ 
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset){
     sprintf(message, "%s(%zu letters)", buffer, len);   // appending received string with its length
-    size_of_message = strlen(message);                  // store the length of the stored message
+    size_of_message = strlen(message);                  // store the length for read() usage
+    length_of_message = strlen(message);                // store the length for ioctl usage 
     printk(KERN_INFO "CSC_DEV_CHAR: Received %zu characters from the user space.\n", len);
     return len;
 }
