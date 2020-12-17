@@ -20,6 +20,7 @@
 #include <linux/fs.h>               // Header for the Linux file system support
 #include <linux/uaccess.h>          // Required for the copy to user function
 #include <linux/ioctl.h>            // Required for IOCTL functions
+#include <linux/string.h>                 // Used for strsep
 
 #define  DEVICE_NAME "cscdevchar"   /// Device will appear as /dev/cscdevchar
 #define  CLASS_NAME  "cscdev"       /// Device class name (character device driver)
@@ -182,7 +183,8 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
  * This function is called when the device is being written to from the user space. An example of
  * this is when data is being sent to the device from the user.
  * 
- * In this case, the data is copied into the message array using sprintf().
+ * In this case, the data is copied into the message array using sprintf() and strsep is used
+ * to calculate the length of the data or string.
  * 
  * @param filep A pointer to the file object as defined in linux/fs.h
  * @param buffer Pointer to the buffer which this function writes to
@@ -190,10 +192,21 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
  * @param offset The offset of the buffer if one is needed.
  */ 
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset){
+    // Defining variables used for keeping track of the length of the string.
+    char *token, *cur;
+    char * const delim = " ";
+    length_of_message = -1;
+
     sprintf(message, "%s(%zu letters)", buffer, len);   // appending received string with its length
     size_of_message = strlen(message);                  // store the length for read() usage
-    length_of_message = strlen(message);                // store the length for ioctl usage 
-    printk(KERN_INFO "CSC_DEV_CHAR: Received %zu characters from the user space.\n", len);
+
+    // Tokenizing the string and counting length.
+    cur = message;
+    while((token = strsep(&cur, delim)) != NULL) {
+        length_of_message++;
+    }
+    
+    printk(KERN_INFO "CSC_DEV_CHAR: Received %d words from the user space.\n", length_of_message);
     return len;
 }
 
