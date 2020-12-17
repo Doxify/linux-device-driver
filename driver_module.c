@@ -30,7 +30,7 @@ MODULE_VERSION("0.0.1");            ///< A version number to inform users
 
 static int    majorNumber;                     ///< Stores the device number -- determined automatically
 static char   message[256] = { 0 };            ///< Memory for the string that is passed from userspace
-static short  bufferSize;                      ///< Used to remember the size of the string stored
+static short  size_of_message;                 ///< Used to remember the size of the string stored
 static int    numOfOpens = 0;                  ///< Counts the number of times the device is opened
 static struct class*  cscdevcharClass  = NULL; ///< The device-driver class struct pointer
 static struct device* cscdevcharDevice = NULL; ///< The device-driver device struct pointer
