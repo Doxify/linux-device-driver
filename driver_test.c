@@ -27,7 +27,7 @@ static char receive[BUFFER_LENGTH];     ///< The receive buffer from the LKM
 
 int main(){
    int ret, fd;
-   int32_t value, num;
+   int32_t value;
    char stringToSend[BUFFER_LENGTH];
    
    // Opening the device with read/write access.
@@ -38,17 +38,26 @@ int main(){
       return errno;
    }
 
-   // Prompting the user for input.
-   printf("Enter the data to send to the driver...\n");
-   scanf("%d", &num);
+   // // Prompting the user for input.
+   // printf("Enter the data to send to the driver...\n");
+   // scanf("%d", &num);
 
-   // Writing the input to the driver.
-   ioctl(fd, WR_DATA, (int32_t*) &num);
+   // // Writing the input to the driver.
+   // ioctl(fd, WR_DATA, (int32_t*) &num);
+
+   // Prompting the user for input.
+   printf("Enter a short string to send to the kernel module...\n");
+   scanf("%[^\n]%*c", stringToSend); // Read in a string (with spaces)
+   ret = write(fd, stringToSend, strlen(stringToSend)); // Send the string to the LKM
+   if (ret < 0){
+      perror("Failed to write the message to the device.");
+      return errno;
+   }
 
    // Reading from the driver.
    printf("Reading the data from the driver...\n");
    ioctl(fd, RD_DATA, (int32_t*) &value);
-   printf("Value recieved from the driver is: %d\n", value);
+   printf("The inputted string (%s) has a length of %d...\n", stringToSend, value);
 
    // Closing the driver.
    printf("Closing the driver...\n");
