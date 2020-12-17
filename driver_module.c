@@ -65,6 +65,11 @@ static struct file_operations file_ops = {
     .release = dev_release,
 };
 
+/**
+ * This function is responsible for either reading/writing from the kernel space/user space.
+ * 
+ * It uses ioctl and copy_from_user/copy_to_user functions.
+ */ 
 static long etx_ioctl(struct file *file, unsigned int cmd, unsigned long arg) {
     switch(cmd) {
         case WR_DATA: {         // When we write data, we copy FROM the user space
