@@ -50,7 +50,7 @@ int main(){
    // Reading from the driver.
    printf("Reading the data from the driver...\n");
    ioctl(fd, RD_DATA, (int32_t*) &value);
-   printf("The inputted string (%s) has a length of %d...\n", stringToSend, value);
+   printf("The inputted string (%s) has %d word(s) in it...\n", stringToSend, value);
 
    // Closing the driver.
    printf("Closing the driver...\n");
